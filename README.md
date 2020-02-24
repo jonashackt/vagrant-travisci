@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jonashackt/vagrant-travisci.svg?branch=master)](https://travis-ci.org/jonashackt/vagrant-travisci)
 
-Example project showing how to run Vagrant on TravisCI 
+Example project showing how to run Vagrant on TravisCI using VirtualBox
 
 
 ## Why Vagrant on a CI system?
@@ -13,18 +13,16 @@ And no, Docker-in-Docker won´t suffice here!
 
 Well until today, I really thought that __there is no way to do it with TravisCI__ - just have a look into https://github.com/jonashackt/vagrant-ansible-on-appveyor ([and this so thread](https://stackoverflow.com/questions/31828555/using-vagrant-on-cloud-ci-services)).
 
-But then I came upon these GitHub issues in my beloved Molecule project: https://github.com/ansible-community/molecule-vagrant/issues/2#issuecomment-585616279 & especially https://github.com/ansible-community/molecule-vagrant/issues/8#issuecomment-589902704, which confused me right away.
+But then I came upon these GitHub issues in my beloved Molecule project: https://github.com/ansible-community/molecule-vagrant/issues/2#issuecomment-585616279 & especially https://github.com/ansible-community/molecule-vagrant/issues/8#issuecomment-589902704, which confused me right away because it says:
 
-Did you know [libvirt](https://libvirt.org/)??! I didn't, this thing is a crazy thing - [an API for all those virtualization providers out there](https://help.ubuntu.com/lts/serverguide/libvirt.html) (sounds like Vagrant, huh?!). And as the GitHub Issue comments state, it should be possible to use Vagrant with libvrt & KVM on TravisCI... Which would give us the following workflow for our tools:
+> I give a try and so SUDDENLY found that Travis CI now coming with vmx from /prof/cpuinfo therefore both libvirt + KVM or VirtualBox now works...
+
+That would be awesome, since it would enable the following workflow (which would be even simpler then his libvirt + KVM alternative, which I also needed to check out (it's working!): https://github.com/jonashackt/vagrant-travisci-libvrt)
 
 ![cloud-uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/jonashackt/vagrant-travisci/master/cloud.iuml)
 ![local-uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/jonashackt/vagrant-travisci/master/local.iuml)
 
-- __ONLY IF__ there are Vagrant Boxes that support both `libvrt` & `virtualbox` as a provider. And... there are! Just have a look at the `generic` boxes on the Vagrant Cloud: https://app.vagrantup.com/boxes/search?provider=libvirt&q=ubuntu+bionic&sort=downloads&utf8=%E2%9C%93, which are backed by https://roboxes.org
-
-This would fulfil our request: in both cases a simple `vagrant up` based on the same [Vagrantfile](Vagrantfile) would work.
-
-## Using vagrant-libvirt to run Vagrant with libvrt & KVM on TravisCI
+## Using VirtualBox to run Vagrant on TravisCI
 
 First we need to configure the usual Travis [.travis.yml](.travis.yml) for our project:
 
@@ -33,8 +31,12 @@ dist: bionic
 language: python
 
 install:
-# Install libvrt & KVM (see https://github.com/alvistack/ansible-role-virtualbox/blob/master/.travis.yml)
-- sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
+# Install VirtualBox
+- sudo wget https://download.virtualbox.org/virtualbox/6.1.4/virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
+- sudo dpkg -i virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
+
+# How did the VirtualBox installation go?
+- VBoxManage --version
 
 # Download Vagrant & Install Vagrant package
 - sudo wget -nv https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_x86_64.deb
@@ -42,12 +44,7 @@ install:
 
 # Vagrant correctly installed?
 - vagrant --version
-
-# Install vagrant-libvirt Vagrant plugin
-- sudo vagrant plugin install vagrant-libvirt
 ```
- 
-Then we also need to install [vagrant-libvirt](https://github.com/vagrant-libvirt/vagrant-libvirt) on TravisCI.
 
 ## prevent errors like The home directory you specified is not accessible
 
@@ -103,11 +100,11 @@ The simplest solution here is to always use `sudo` prefixing our `vagrant` comma
 
 ## Finally testdrive the Vagrant installation
 
-Now we should be able to add a `vagrant up` to the `script` section to our [.travis.yml](.travis.yml). __But be sure__ to add the ` --provider=libvirt` to the command! Otherwise Vagrant won't pick up `libvrt` as it's virtualization provider ([as stated in the docs](https://github.com/vagrant-libvirt/vagrant-libvirt#start-vm9)):
+Now we should be able to add a `vagrant up` to the `script` section to our [.travis.yml](.travis.yml):
 
 ```yaml
 script:
-- sudo vagrant up --provider=libvirt
+- sudo vagrant up
 - sudo vagrant ssh -c "echo 'hello world!'"
 ```
 

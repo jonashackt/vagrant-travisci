@@ -3,14 +3,10 @@
 cloud Cloud {
     node TravisCI
     node Vagrant
-    node vagrantlibvrt
-    node libvrt
-    node KVM
+    node VirtualBox
 
     TravisCI -> Vagrant
-    Vagrant -> vagrantlibvrt
-    vagrantlibvrt -> libvrt
-    libvrt -> KVM
+    Vagrant -> VirtualBox
 }
 
 @enduml
