@@ -12,8 +12,10 @@ install:
 - sudo apt-get update && sudo apt-get install -y libopus0 libqt5core5a libqt5gui5 libqt5opengl5 libqt5printsupport5 libqt5widgets5 libqt5x11extras5 libsdl1.2debian libvpx5
 
 # Install VirtualBox
-- sudo wget https://download.virtualbox.org/virtualbox/6.1.4/virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
-- sudo dpkg -i virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
+#- sudo wget https://download.virtualbox.org/virtualbox/6.1.4/virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
+#- sudo dpkg -i virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
+- sudo dpkg-reconfigure virtualbox-dkms
+- sudo dpkg-reconfigure virtualbox
 
 # How did the VirtualBox installation go?
 - VBoxManage --version
@@ -26,5 +28,5 @@ install:
 - vagrant --version
 
 script:
-- sudo vagrant up
+- sudo vagrant up --provider=virtualbox
 - sudo vagrant ssh -c "echo 'hello world!'"
