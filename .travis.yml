@@ -12,11 +12,10 @@ install:
 - sudo apt-get update && sudo apt-get install -y libopus0 libqt5core5a libqt5gui5 libqt5opengl5 libqt5printsupport5 libqt5widgets5 libqt5x11extras5 libsdl1.2debian libvpx5
 
 # Install VirtualBox
-- sudo wget https://download.virtualbox.org/virtualbox/6.1.4/virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
-- sudo dpkg -i virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
+- sudo wget https://download.virtualbox.org/virtualbox/6.0.16/virtualbox-6.0_6.0.16-135674~Ubuntu~bionic_amd64.deb
+- sudo dpkg -i virtualbox-6.0_6.0.16-135674~Ubuntu~bionic_amd64.deb
 
 # How did the VirtualBox installation go?
-- sudo modprobe vboxdrv
 - sudo VBoxManage --version
 
 # Download Vagrant & Install Vagrant package
