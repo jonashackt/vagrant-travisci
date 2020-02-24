@@ -16,7 +16,8 @@ install:
 - sudo dpkg -i virtualbox-6.1_6.1.4-136177~Ubuntu~bionic_amd64.deb
 
 # How did the VirtualBox installation go?
-- VBoxManage --version
+- sudo modprobe vboxdrv
+- sudo VBoxManage --version
 
 # Download Vagrant & Install Vagrant package
 - sudo wget -nv https://releases.hashicorp.com/vagrant/2.2.7/vagrant_2.2.7_x86_64.deb
