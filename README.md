@@ -4,6 +4,7 @@
 
 Example project showing how to run Vagrant on TravisCI using VirtualBox
 
+> See a working example here: https://github.com/jonashackt/vagrant-travisci-libvrt (I didn't get this setup with VirtualBox here to work, BUT the libvirt + KVM variant works like a charm!)
 
 ## Why Vagrant on a CI system?
 
